@@ -6,22 +6,30 @@ import { useFocusEffect } from '@react-navigation/native';
 
 const PlayButtons = ({ deleteBool }) => {
     const [songs, setSongs] = useState([]);
+    const [playPressed, setPlayPressed] = useState(false)
     const styles = StyleSheet.create({
         button: {
             backgroundColor: '#333333',
             padding: 20,
-            flexDirection: 'row',
+            width: 180,
+            flexDirection: 'column-reverse',
             justifyContent: 'space-between',
             borderRadius: 10,
             borderWidth: 2,
-            marginLeft: 30,
-            marginRight: 30,
+            marginLeft: 10,
+            marginRight: 10,
             marginTop: 20,
         },
+        buttonContainer: {
+            display: 'flex',
+            flexWrap: 'wrap',
+            flexDirection: 'row',
+        },
         text: {
-            color: 'white',
+            color: '#F2F0EF',
             fontSize: 20,
             textAlign: 'center',
+            fontWeight: 'bold',
         },
         textRed: {
             display: deleteBool ? 'block' : 'none',
@@ -58,6 +66,14 @@ const PlayButtons = ({ deleteBool }) => {
         ]);
     }
 
+    const onPlayPress = () => {
+        if (playPressed == true) {
+            setPlayPressed(false)
+        } else {
+            setPlayPressed(true)
+        }
+    }
+
     const fetchSongs = async () => {
         const keys = await AsyncStorage.getAllKeys();
         const storedSongs = await Promise.all(
@@ -77,10 +93,10 @@ const PlayButtons = ({ deleteBool }) => {
     );
 
     return (
-        <View>
+        <View style={styles.buttonContainer}>
             {songs.map((song) => (
-                <Pressable style={styles.button} key={song.name}>
-                    <PlayButton filePath={song.filePath} />
+                <Pressable onPress={onPlayPress} style={[styles.button, { backgroundColor: song.color }]} key={song.name}>
+                    <PlayButton onPlay={playPressed} filePath={song.filePath} />
                     <Text style={styles.text}>{song.name}</Text>
                     <Pressable onPress={() => { onDelete(song.name) }}><Text style={styles.textRed}>{deleteBool ? 'X' : '   '}</Text></Pressable>
                 </Pressable>

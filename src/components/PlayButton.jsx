@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, StyleSheet, View, Alert, PermissionsAndroid } from 'react-native';
+import { TouchableOpacity, StyleSheet, View, Alert, PermissionsAndroid, Pressable } from 'react-native';
 import Sound from 'react-native-sound';
 import RNFS from 'react-native-fs';
 
-const PlayButton = ({ filePath }) => {
+const PlayButton = ({ filePath, onPlay }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [sound, setSound] = useState(null);
 
@@ -15,6 +15,21 @@ const PlayButton = ({ filePath }) => {
             }
         };
     }, [sound]);
+
+
+
+    useEffect(() => {
+        if (onPlay == true) {
+            handlePlayPause()
+        } else if (onPlay == false) {
+            if (sound) {
+                sound.pause()
+                setIsPlaying(false)
+            }
+
+
+        }
+    }, [onPlay])
 
     // const requestStoragePermission = async () => {
     //     if (Platform.OS === 'android') {
@@ -98,16 +113,14 @@ const PlayButton = ({ filePath }) => {
     };
 
     return (
-        <TouchableOpacity style={styles.button} onPress={handlePlayPause}>
+        <Pressable style={styles.button} onPress={handlePlayPause} >
             <View style={styles.playIcon(isPlaying)} />
-        </TouchableOpacity>
+        </Pressable>
     );
 };
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: '#007bff',
-        borderRadius: 50,
         width: 40,
         height: 40,
         justifyContent: 'center',
